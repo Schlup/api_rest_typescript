@@ -12,11 +12,9 @@ import {
   Search as SearchIcon,
 } from "@mui/icons-material";
 
-interface HeaderProps {
-  onGetData: () => void;
-}
+import { Link as RouterLink } from "react-router-dom";
 
-const Header: React.FC<HeaderProps> = ({ onGetData }) => {
+const Header: React.FC = () => {
   return (
     <AppBar position="static" sx={{ bgcolor: "primary.main", boxShadow: 1 }}>
       <Container maxWidth="lg">
@@ -27,20 +25,11 @@ const Header: React.FC<HeaderProps> = ({ onGetData }) => {
               Demo Educacional
             </Typography>
           </Box>
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<SearchIcon />}
-            onClick={onGetData}
-            sx={{
-              bgcolor: "white",
-              color: "primary.main",
-              "&:hover": {
-                bgcolor: "grey.100",
-              },
-            }}
-          >
-            GET Lista
+          <Button component={RouterLink} to="/" color="inherit">
+            Ver Lista
+          </Button>
+          <Button component={RouterLink} to="/post" color="inherit">
+            Fazer Requisição
           </Button>
         </Toolbar>
       </Container>
