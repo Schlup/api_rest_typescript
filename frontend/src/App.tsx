@@ -1,35 +1,84 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { ThemeProvider } from "@emotion/react";
+import { CssBaseline, Box, Container } from "@mui/material";
+import { useState } from "react";
+import DetailsSection from "./components/DetailSection";
+import theme from "./themes/theme";
+import type { ActiveSection, EducationalItem, PostData } from "./types";
+import { initialData } from "./data/mockData";
+import Header from "./components/Header";
+import Navigation from "./components/Navigation";
+import EducationalList from "./components/EducationalList";
+import PostSection from "./components/PostSection";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [data, setData] = useState<EducationalItem[]>(initialData);
+  const [selectedItem, setSelectedItem] = useState<EducationalItem | null>(
+    null
+  );
+  const [postData, setPostData] = useState<PostData>({ subject_id: 2 });
+  const [activeSection, setActiveSection] = useState<ActiveSection>("list");
+
+  const handleGetData = (): void => {
+    console.log("GET Request - Lista obtida:", data);
+    setActiveSection("list");
+  };
+
+  const handlePostData = (): void => {
+    console.log("POST Request:", postData);
+    const foundItem = data.find((item) =>
+      item.subjects.some((subject) => subject.id === postData.subject_id)
+    );
+    if (foundItem) {
+      setSelectedItem(foundItem);
+      setActiveSection("details");
+    }
+  };
+
+  const handleItemClick = (item: EducationalItem): void => {
+    setSelectedItem(item);
+    setActiveSection("details");
+  };
+
+  const handleSectionChange = (section: ActiveSection): void => {
+    setActiveSection(section);
+  };
+
+  const handlePostDataChange = (newPostData: PostData): void => {
+    setPostData(newPostData);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+        <Header onGetData={handleGetData} />
 
-export default App
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Navigation
+            activeSection={activeSection}
+            selectedItem={selectedItem}
+            onSectionChange={handleSectionChange}
+          />
+
+          {activeSection === "list" && (
+            <EducationalList data={data} onItemClick={handleItemClick} />
+          )}
+
+          {activeSection === "post" && (
+            <PostSection
+              postData={postData}
+              onPostDataChange={handlePostDataChange}
+              onPostSubmit={handlePostData}
+            />
+          )}
+
+          {activeSection === "details" && selectedItem && (
+            <DetailsSection selectedItem={selectedItem} />
+          )}
+        </Container>
+      </Box>
+    </ThemeProvider>
+  );
+};
+
+export default App;
