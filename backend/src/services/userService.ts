@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../entities/User";
 import { userRepository } from "../repositories/userRepository";
-import { CreateUserDTO } from "../dtos/CreateUserDTO";
-import { LoginUserDTO } from "../dtos/LoginUserDTO";
+import { CreateUserDTO } from "../dtos/user/CreateUserDTO";
+import { LoginUserDTO } from "../dtos/user/LoginUserDTO";
 
 type LoginResponse = {
   token: string;
